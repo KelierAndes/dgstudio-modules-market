@@ -230,6 +230,7 @@ ctx.set_intensity_param("fire_strength", 80, slot_id=sid)  # 设备级覆盖
 | `ctx.add_strength(channel, delta, slot_id=None)` | 增减（步长/量化/上限保护） |
 | `ctx.reset_strength(channel, slot_id=None)` | 归零：强度清零 + 波形切回静默 |
 | `ctx.set_wave(channel, name, slot_id=None)` | 切波形（不中断强度会话） |
+| `ctx.push_pulse_stream(frequency, channel="A", level=100, slot_id=None)` | **外部脉冲流**：每 0.1s 推入一次频率数据（逻辑频率 10-1000，电平 0-100，0=该帧静音），核心把每次推送转成一帧 100ms 脉冲按序播放——波形由模块数据生成，不使用内置波形发生器。仅当该通道波形选中「外部脉冲流 (PULSE_STREAM)」时落地，其余情况静默丢弃（可常推不息）。返回协程：异步上下文直接 `await`，否则 `ctx.submit`。蓝牙/V4 实时逐帧成流，V3 为尽力而为 |
 | `ctx.fire_start(slot_id=None)` / `fire_stop(…)` | 按住持续开火（60 秒安全超时，结束恢复原强度/波形） |
 | `ctx.zap(channel, seconds, slot_id=None)` | 定时爆发（等价 fire） |
 | `ctx.emergency_stop()` | 急停：全部输出设备清零 + 波形重置 |
@@ -439,3 +440,9 @@ META = {
 模块零界面代码），检测配置存设置文件的 `detectors` 列表；运行时对象挂在
 `self.bridge` 上（联动页按 `inst.bridge.engine` 查找映射引擎以渲染实时值）；
 其 `dependencies` 同时演示了必装依赖与「!」可选依赖（OCR 增强）的写法。
+
+`dgstudio-modules-sound_link`（音频联动）演示 `ctx.push_pulse_stream` 外部脉冲流：
+采集麦克风/系统声音，维护左/右响度与左/右频率四个映射变量（`META["params"]`
+静态声明），每 0.1s 把频率（对数映射到设备逻辑频率 10-1000，响度作电平）推入
+核心「外部脉冲流 (PULSE_STREAM)」波形——波形由模块数据生成，不使用内置波形
+发生器；输入映射表空时按「响度×2 驱动强度」落地默认行。
