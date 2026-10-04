@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-04T08:33:22Z"
+generated: "2026-10-04T14:19:47Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -14,6 +14,17 @@ modules:
     default_enabled: false
     requirements: []
     files: [".gitignore", "AliceInCradleLink/AliceInCradleLink.csproj", "AliceInCradleLink/DataClient.cs", "AliceInCradleLink/EventHooks.cs", "AliceInCradleLink/LinkConfig.cs", "AliceInCradleLink/LinkRunner.cs", "AliceInCradleLink/OverlayUi.cs", "AliceInCradleLink/Plugin.cs", "AliceInCradleLink/VitalReader.cs", "AliceInCradleLink/VitalSampler.cs", "LICENSE", "README.md", "_vendor/bepinex-core/0Harmony.dll", "_vendor/bepinex-core/BepInEx.dll", "modules/__init__.py", "modules/alice_cradle/__init__.py", "modules/alice_cradle/mods/AliceInCradleLink.dll", "modules/alice_cradle/plugin.py", "modules/alice_cradle/requirements.txt", "modules/alice_cradle/server.py", "modules/alice_cradle/vendor/BepInEx_win_x64_5.4.23.5.zip", "tests/_bootstrap.py", "tests/test_alice_cradle.py"]
+  - id: "margin_control"
+    repo: "dgstudio-modules-margin_control"
+    path: "modules/margin_control"
+    branch: "main"
+    author: "KelierAndes"
+    name: "灵猫边控联动"
+    version: "0.1.0"
+    description: "灵猫气压 / 官方边控会话 → 输出设备闭环边控：按气压阈值自动「刺激→到边→冷静→恢复」，或跟随 App 边控状态驱动设备；映射表可完全自定义。"
+    default_enabled: false
+    requirements: []
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/margin_control/__init__.py", "modules/margin_control/bridge.py", "modules/margin_control/plugin.py", "modules/margin_control/requirements.txt", "tests/_bootstrap.py", "tests/test_margin_control.py"]
   - id: "osc_bridge"
     repo: "dgstudio-modules-osc_bridge"
     path: "modules/osc_bridge"
