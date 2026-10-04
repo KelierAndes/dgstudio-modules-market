@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-04T16:15:18Z"
+generated: "2026-10-04T17:55:44Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -20,8 +20,8 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "灵猫边控联动"
-    version: "0.3.1"
-    description: "灵猫气压 / 官方边控会话 → 闭环边控：按气压阈值自动「刺激→到边→冷静→恢复」，循环达上限后释放（助力强度经刺激器变量输出），或跟随 App 边控状态；设备控制只经映射表传递。"
+    version: "0.4.0"
+    description: "灵猫气压 / 官方边控会话 → 闭环边控：红线/蓝线 + 持续判定 + 气压跳变 + 阈值自适应，边控次数或时长达限释放；设备控制只经映射表传递。"
     default_enabled: false
     requirements: []
     files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/margin_control/__init__.py", "modules/margin_control/bridge.py", "modules/margin_control/plugin.py", "modules/margin_control/requirements.txt", "tests/_bootstrap.py", "tests/test_margin_control.py"]
