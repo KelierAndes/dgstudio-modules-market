@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-04T05:11:08Z"
+generated: "2026-10-04T05:14:03Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -64,7 +64,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "手柄震动联动（XInput）"
-    version: "0.2.0"
+    version: "0.2.1"
     description: "经 ViGEm 虚拟手柄接收游戏原生 XInput 震动派发（不注入游戏），震动强度/状态经映射表达式驱动郊狼与负鼠；支持键盘键位映射（无手柄调试）、实体手柄透传与回环自测。"
     default_enabled: false
     requirements: []
