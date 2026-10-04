@@ -192,7 +192,9 @@ params = ctx.intensity_params()            # 默认输出设备；也可传 slot
 | `channel_status` | 探活：0/2 正常，1 异常 |
 | `max_strength` | 最大强度上限（设备独立值，缺省全局 100） |
 | `strength_step` | 步长（已按设备量化，OVC 至少 10） |
-| `fire_strength` / `fire_duration_s` | 开火强度（0=跟随上限）/ 时长（秒） |
+| `fire_strength` | 旧版双通道共用开火强度（遗留键，兼容保留；0=跟随上限） |
+| `fire_strength_a` / `fire_strength_b` | A/B 通道独立开火强度（0=跟随该设备上限） |
+| `fire_duration_s` | 开火时长（秒） |
 | `wave_duration_s` | Socket V3 波形循环时长（秒） |
 | `wave` | `{"A", "B"}` 当前选定波形名 |
 
@@ -200,14 +202,17 @@ params = ctx.intensity_params()            # 默认输出设备；也可传 slot
 
 ```python
 ctx.set_intensity_param("max_strength", 150)               # 全局
-ctx.set_intensity_param("fire_strength", 80, slot_id=sid)  # 设备级覆盖
+ctx.set_intensity_param("fire_strength", 80, slot_id=sid)  # 设备级覆盖（旧键）
+ctx.set_intensity_param("fire_strength_a", 40, slot_id=sid)  # A 通道独立开火强度
+ctx.set_intensity_param("fire_strength_b", 60, slot_id=sid)  # B 通道独立开火强度
 ```
 
 | 键 | 范围 | 说明 |
 |---|---|---|
 | `max_strength` | 0–200 | 最大强度上限（钳制一切强度设定，含开火） |
 | `strength_step` | 1–50 | 加减步长（OVC 量化到 10 的倍数） |
-| `fire_strength` | 0–200 | 0 = 跟随 max_strength |
+| `fire_strength` | 0–200 | 旧版双通道共用键（兼容保留），0 = 跟随 max_strength |
+| `fire_strength_a` / `fire_strength_b` | 0–200 | 通道开火强度；设备级显式 0 = 跟随该设备上限，全局 0 视为未设定（回退旧键） |
 | `fire_duration_s` | 0.1–60 | 定时开火时长 |
 | `wave_duration_s` | 1–120 | 仅全局，无设备级覆盖 |
 
@@ -231,9 +236,10 @@ ctx.set_intensity_param("fire_strength", 80, slot_id=sid)  # 设备级覆盖
 | `ctx.reset_strength(channel, slot_id=None)` | 归零：强度清零 + 波形切回静默 |
 | `ctx.set_wave(channel, name, slot_id=None)` | 切波形（不中断强度会话） |
 | `ctx.push_pulse_stream(frequency, channel="A", level=100, slot_id=None)` | **外部脉冲流**：每 0.1s 推入一次频率数据（逻辑频率 10-1000，电平 0-100，0=该帧静音），核心把每次推送转成一帧 100ms 脉冲按序播放——波形由模块数据生成，不使用内置波形发生器。仅当该通道波形选中「外部脉冲流 (PULSE_STREAM)」时落地，其余情况静默丢弃（可常推不息）。返回协程：异步上下文直接 `await`，否则 `ctx.submit`。蓝牙/V4 实时逐帧成流，V3 为尽力而为 |
-| `ctx.fire_start(slot_id=None)` / `fire_stop(…)` | 按住持续开火（60 秒安全超时，结束恢复原强度/波形） |
-| `ctx.zap(channel, seconds, slot_id=None)` | 定时爆发（等价 fire） |
-| `ctx.emergency_stop()` | 急停：全部输出设备清零 + 波形重置 |
+| `ctx.fire(slot_id=None, duration_s=None, channel=None)` | 一键开火（定时，到时自动恢复强度/波形）；`channel`="A"/"B" 只开火该通道，缺省双通道。需 Socket V4 / 蓝牙连接 |
+| `ctx.fire_start(slot_id=None, channel=None)` / `fire_stop(slot_id=None, channel=None)` | 按住持续开火（60 秒安全超时，结束恢复原强度/波形）；`channel`="A"/"B" 只动该通道，缺省双通道。开火保持按 (设备, 通道) 独立记账 |
+| `ctx.zap(channel, seconds, slot_id=None)` | 定时爆发：**仅对指定通道**开火（通道分离语义；需双通道齐射请分别调 A/B 或用 `ctx.fire` 不带 channel） |
+| `ctx.emergency_stop()` | 急停：全部输出设备清零 + 波形重置（取消全部通道的开火保持） |
 
 ---
 
@@ -351,7 +357,7 @@ META = {
 
 | 侧向 | 声明方式 | 运行期覆写 | 说明 |
 |---|---|---|---|
-| 核心输入（模块→设备） | 固定 | `core_inputs()` 列全部条目 | id 为 `in_*`（郊狼）/ `in_ovc_*`（负鼠）+ 全局 `in_emergency`；含 key/label/type/range |
+| 核心输入（模块→设备） | 固定 | `core_inputs()` 列全部条目 | id 为 `in_*`（郊狼）/ `in_ovc_*`（负鼠）+ 全局 `in_emergency`；含 key/label/type/range。开火按通道独立：`in_fire` / `in_ovc_fire`（双通道）与 `in_fire_a/b`、`in_ovc_fire_a/b`（仅本通道，Bool） |
 | 核心输出（设备→模块） | 固定 | `output_specs(family, index)` | id 为 `家族.信号`（多台 `家族.序号.信号`，如 `COYOTE.2.Battery`）+ 全局 `Action` |
 | 模块可写（喂给核心） | `META["params"]` | `link_params()` → `[(名, 说明)]` | 输入表表达式中以 `{名}` 引用 |
 | 模块可读（从核心读走） | `META["reads"]`（核心信号名 → {label, name, type}） | `read_params()` → `[(信号名, 说明)]` | 装载时空输出表按声明自动落地默认行，联动页据此做字段名联想 |

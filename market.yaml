@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-04T05:14:03Z"
+generated: "2026-10-04T05:28:49Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -9,18 +9,18 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "Alice in Cradle 联动"
-    version: "0.6.4"
+    version: "0.6.5"
     description: "游戏侧 MOD 仅上报 HP/MP 等命名数值，本模块按核心参数映射表求值驱动设备，并把设备状态表达式回传游戏（HTTP + JSON）。"
     default_enabled: false
     requirements: []
-    files: [".gitignore", "AliceInCradleLink/AliceInCradleLink.csproj", "AliceInCradleLink/DataClient.cs", "AliceInCradleLink/EventHooks.cs", "AliceInCradleLink/LinkConfig.cs", "AliceInCradleLink/LinkRunner.cs", "AliceInCradleLink/OverlayUi.cs", "AliceInCradleLink/Plugin.cs", "AliceInCradleLink/VitalReader.cs", "AliceInCradleLink/VitalSampler.cs", "LICENSE", "README.md", "_vendor/bepinex-core/0Harmony.dll", "_vendor/bepinex-core/BepInEx.dll", "modules/__init__.py", "modules/alice_cradle/__init__.py", "modules/alice_cradle/mods/AliceInCradleLink.dll", "modules/alice_cradle/plugin.py", "modules/alice_cradle/requirements.txt", "modules/alice_cradle/server.py", "modules/alice_cradle/vendor/BepInEx_win_x64_5.4.23.5.zip", "tests/_bootstrap.py", "tests/test_alice_cradle.py"]
+    files: [".gitignore", "AliceInCradleLink/AliceInCradleLink.csproj", "AliceInCradleLink/DataClient.cs", "AliceInCradleLink/EventHooks.cs", "AliceInCradleLink/LinkConfig.cs", "AliceInCradleLink/LinkRunner.cs", "AliceInCradleLink/OverlayUi.cs", "AliceInCradleLink/Plugin.cs", "AliceInCradleLink/VitalReader.cs", "AliceInCradleLink/VitalSampler.cs", "AliceInCradleLink/bin/Debug/AliceInCradleLink.deps.json", "AliceInCradleLink/bin/Debug/AliceInCradleLink.dll", "AliceInCradleLink/bin/Debug/AliceInCradleLink.pdb", "AliceInCradleLink/obj/AliceInCradleLink.csproj.nuget.dgspec.json", "AliceInCradleLink/obj/AliceInCradleLink.csproj.nuget.g.props", "AliceInCradleLink/obj/AliceInCradleLink.csproj.nuget.g.targets", "AliceInCradleLink/obj/Debug/.NETStandard,Version=v2.1.AssemblyAttributes.cs", "AliceInCradleLink/obj/Debug/AliceInCradleLink.AssemblyInfo.cs", "AliceInCradleLink/obj/Debug/AliceInCradleLink.AssemblyInfoInputs.cache", "AliceInCradleLink/obj/Debug/AliceInCradleLink.GeneratedMSBuildEditorConfig.editorconfig", "AliceInCradleLink/obj/Debug/AliceInCradleLink.assets.cache", "AliceInCradleLink/obj/Debug/AliceInCradleLink.csproj.AssemblyReference.cache", "AliceInCradleLink/obj/Debug/AliceInCradleLink.csproj.CoreCompileInputs.cache", "AliceInCradleLink/obj/Debug/AliceInCradleLink.csproj.FileListAbsolute.txt", "AliceInCradleLink/obj/Debug/AliceInCradleLink.dll", "AliceInCradleLink/obj/Debug/AliceInCradleLink.pdb", "AliceInCradleLink/obj/project.assets.json", "AliceInCradleLink/obj/project.nuget.cache", "LICENSE", "README.md", "_vendor/bepinex-core/0Harmony.dll", "_vendor/bepinex-core/BepInEx.dll", "modules/__init__.py", "modules/alice_cradle/__init__.py", "modules/alice_cradle/mods/AliceInCradleLink.dll", "modules/alice_cradle/plugin.py", "modules/alice_cradle/requirements.txt", "modules/alice_cradle/server.py", "modules/alice_cradle/vendor/BepInEx_win_x64_5.4.23.5.zip", "tests/_bootstrap.py", "tests/test_alice_cradle.py", "待办.txt"]
   - id: "osc_bridge"
     repo: "dgstudio-modules-osc_bridge"
     path: "modules/osc_bridge"
     branch: "main"
     author: "KelierAndes"
     name: "VRChat OSC 联动"
-    version: "1.5.0"
+    version: "1.6.0"
     description: "头像参数动态建表，核心参数映射表双向表达式驱动：设备数值经表达式写回头像参数，头像参数/游戏信号反向控制设备。"
     default_enabled: false
     requirements: ["python-osc>=1.9"]
@@ -31,7 +31,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "音频联动"
-    version: "0.2.1"
+    version: "0.2.2"
     description: "纯输入联动：采集麦克风/系统声音，实时输出左/右响度与左/右频率四个映射变量；每 0.1 秒把频率推入核心「外部脉冲流」波形，让输出频率跟随声音音高、电平跟随响度。"
     default_enabled: false
     requirements: ["numpy>=1.26", "sounddevice>=0.4.6", "pyaudiowpatch>=0.2.12.6; sys_platform == \"win32\""]
@@ -53,7 +53,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "画面识别联动"
-    version: "0.3.1"
+    version: "0.3.2"
     description: "OpenCV 通用画面识别：以「参数名 ← 检测行为」自定义实时参数（检测颜色 / 图片 / 数值 / 数值条，区域例图可截图选取，数字/文字 RapidOCR 识别），经核心参数映射表驱动设备。"
     default_enabled: false
     requirements: ["opencv-python-headless>=4.10", "!rapidocr-onnxruntime>=1.4.4", "!onnxruntime==1.19.2", "!pyclipper", "!Shapely", "!PyYAML", "!six", "!tqdm"]
