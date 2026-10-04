@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-03T16:52:17Z"
+generated: "2026-10-04T03:56:30Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -25,6 +25,17 @@ modules:
     default_enabled: false
     requirements: ["python-osc>=1.9"]
     files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/osc_bridge/__init__.py", "modules/osc_bridge/bridge.py", "modules/osc_bridge/plugin.py", "modules/osc_bridge/requirements.txt", "modules/osc_bridge/wheels/python_osc-1.10.2-py3-none-any.whl", "tests/_bootstrap.py", "tests/test_multi_device.py", "tests/test_osc_defaults.py", "tests/test_osc_runtime.py"]
+  - id: "sound_link"
+    repo: "dgstudio-modules-sound_link"
+    path: "modules/sound_link"
+    branch: "main"
+    author: "KelierAndes"
+    name: "音频联动"
+    version: "0.1.0"
+    description: "采集麦克风/系统声音，实时输出左/右响度与左/右频率四个映射变量；每 0.1 秒把频率推入核心「外部脉冲流」波形，让输出频率跟随声音音高、电平跟随响度。"
+    default_enabled: false
+    requirements: ["numpy>=1.26", "sounddevice>=0.4.6"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/sound_link/__init__.py", "modules/sound_link/bridge.py", "modules/sound_link/plugin.py", "modules/sound_link/requirements.txt", "modules/sound_link/wheels/cffi-2.1.1-cp312-cp312-win_amd64.whl", "modules/sound_link/wheels/numpy-2.5.3-cp312-cp312-win_amd64.whl", "modules/sound_link/wheels/pycparser-3.0-py3-none-any.whl", "modules/sound_link/wheels/sounddevice-0.5.6-py3-none-win_amd64.whl", "tests/_bootstrap.py", "tests/test_sound_link.py"]
   - id: "strength_logger"
     repo: "dgstudio-modules-strength_logger"
     path: "modules/strength_logger"
