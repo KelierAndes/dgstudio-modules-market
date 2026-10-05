@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-05T15:44:32Z"
+generated: "2026-10-05T16:40:15Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -31,7 +31,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "VRChat OSC 联动"
-    version: "1.10.0"
+    version: "1.11.0"
     description: "头像参数动态建表；设备接入即自动维护完整 OSC 路径命名的回传临时变量（重命名即改地址），联动页面板可见，不建事件流、不写映射表。"
     default_enabled: false
     requirements: ["python-osc>=1.9"]
