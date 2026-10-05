@@ -235,7 +235,7 @@ ctx.set_intensity_param("fire_strength_b", 60, slot_id=sid)  # B 通道独立开
 | `ctx.add_strength(channel, delta, slot_id=None)` | 增减（步长/量化/上限保护） |
 | `ctx.reset_strength(channel, slot_id=None)` | 归零：强度清零 + 波形切回静默 |
 | `ctx.set_wave(channel, name, slot_id=None)` | 切波形（不中断强度会话） |
-| `ctx.push_pulse_stream(frequency, channel="A", level=100, slot_id=None)` | **外部脉冲流直推 API**：每 0.1s 推入一次频率数据（逻辑频率 10-1000，电平 0-100，0=该帧静音），核心把每次推送转成一帧 100ms 脉冲按序播放——波形由模块数据生成，不使用内置波形发生器。仅当该通道波形选中「外部脉冲流 (PULSE_STREAM)」时落地，其余情况静默丢弃（可常推不息）。返回协程：异步上下文直接 `await`，否则 `ctx.submit`。蓝牙/V4 实时逐帧成流，V3 为尽力而为。**常规路径是事件流周期卡**：把变量推入核心输入参数 `in_pulse_a/b`（数值推入，见 §4.2），经同一落地链路且自带 0.1s 节流 |
+| `ctx.push_pulse_stream(frequency, channel="A", level=100, slot_id=None)` | **外部脉冲流直推 API**：每 0.1s 推入一次频率数据（逻辑频率 10-1000，电平 0-100，0=该帧静音），核心把每次推送作为**最新帧**刷新播放（实时跟随；追加历史会因播放循环积压导致频率严重滞后）——波形由模块数据生成，不使用内置波形发生器。仅当该通道波形选中「外部脉冲流 (PULSE_STREAM)」时落地，其余情况静默丢弃（可常推不息）。返回协程：异步上下文直接 `await`，否则 `ctx.submit`。蓝牙实时逐帧跟随；V4 随补批节奏（≤1s）跟随；V3 为尽力而为（整段窗口重发）。**常规路径是事件流周期卡**：把变量推入核心输入参数 `in_pulse_a/b`（数值推入，见 §4.2），经同一落地链路且自带 0.1s 节流 |
 | `ctx.fire(slot_id=None, duration_s=None, channel=None)` | 一键开火（定时，到时自动恢复强度/波形）；`channel`="A"/"B" 只开火该通道，缺省双通道。需 Socket V4 / 蓝牙连接 |
 | `ctx.fire_start(slot_id=None, channel=None)` / `fire_stop(slot_id=None, channel=None)` | 按住持续开火（60 秒安全超时，结束恢复原强度/波形）；`channel`="A"/"B" 只动该通道，缺省双通道。开火保持按 (设备, 通道) 独立记账 |
 | `ctx.zap(channel, seconds, slot_id=None)` | 定时爆发：**仅对指定通道**开火（通道分离语义；需双通道齐射请分别调 A/B 或用 `ctx.fire` 不带 channel） |
