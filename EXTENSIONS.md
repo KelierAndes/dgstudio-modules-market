@@ -235,7 +235,7 @@ ctx.set_intensity_param("fire_strength_b", 60, slot_id=sid)  # B 通道独立开
 | `ctx.add_strength(channel, delta, slot_id=None)` | 增减（步长/量化/上限保护） |
 | `ctx.reset_strength(channel, slot_id=None)` | 归零：强度清零 + 波形切回静默 |
 | `ctx.set_wave(channel, name, slot_id=None)` | 切波形（不中断强度会话） |
-| `ctx.push_pulse_stream(frequency, channel="A", level=100, slot_id=None)` | **外部脉冲流**：每 0.1s 推入一次频率数据（逻辑频率 10-1000，电平 0-100，0=该帧静音），核心把每次推送转成一帧 100ms 脉冲按序播放——波形由模块数据生成，不使用内置波形发生器。仅当该通道波形选中「外部脉冲流 (PULSE_STREAM)」时落地，其余情况静默丢弃（可常推不息）。返回协程：异步上下文直接 `await`，否则 `ctx.submit`。蓝牙/V4 实时逐帧成流，V3 为尽力而为 |
+| `ctx.push_pulse_stream(frequency, channel="A", level=100, slot_id=None)` | **外部脉冲流直推 API**：每 0.1s 推入一次频率数据（逻辑频率 10-1000，电平 0-100，0=该帧静音），核心把每次推送转成一帧 100ms 脉冲按序播放——波形由模块数据生成，不使用内置波形发生器。仅当该通道波形选中「外部脉冲流 (PULSE_STREAM)」时落地，其余情况静默丢弃（可常推不息）。返回协程：异步上下文直接 `await`，否则 `ctx.submit`。蓝牙/V4 实时逐帧成流，V3 为尽力而为。**常规路径是事件流周期卡**：把变量推入核心输入参数 `in_pulse_a/b`（数值推入，见 §4.2），经同一落地链路且自带 0.1s 节流 |
 | `ctx.fire(slot_id=None, duration_s=None, channel=None)` | 一键开火（定时，到时自动恢复强度/波形）；`channel`="A"/"B" 只开火该通道，缺省双通道。需 Socket V4 / 蓝牙连接 |
 | `ctx.fire_start(slot_id=None, channel=None)` / `fire_stop(slot_id=None, channel=None)` | 按住持续开火（60 秒安全超时，结束恢复原强度/波形）；`channel`="A"/"B" 只动该通道，缺省双通道。开火保持按 (设备, 通道) 独立记账 |
 | `ctx.zap(channel, seconds, slot_id=None)` | 定时爆发：**仅对指定通道**开火（通道分离语义；需双通道齐射请分别调 A/B 或用 `ctx.fire` 不带 channel） |
@@ -357,7 +357,7 @@ META = {
 
 | 侧向 | 声明方式 | 运行期覆写 | 说明 |
 |---|---|---|---|
-| 核心输入（模块→设备） | 固定 | `core_inputs()` 列全部条目 | id 为 `in_*`（郊狼）/ `in_ovc_*`（负鼠）+ 全局 `in_emergency`；含 key/label/type/range。开火按通道独立：`in_fire` / `in_ovc_fire`（双通道）与 `in_fire_a/b`、`in_ovc_fire_a/b`（仅本通道，Bool） |
+| 核心输入（模块→设备） | 固定 | `core_inputs()` 列全部条目 | id 为 `in_*`（郊狼）/ `in_ovc_*`（负鼠）+ 全局 `in_emergency`；含 key/label/type/range。开火按通道独立：`in_fire` / `in_ovc_fire`（双通道）与 `in_fire_a/b`、`in_ovc_fire_a/b`（仅本通道，Bool）。**脉冲流数值推入**：`in_pulse_a/b`、`in_ovc_pulse_a/b`（Int 0-1000）——0=静音帧、10-1000=脉冲频率（逻辑频率），事件流「周期更新」卡片每拍把变量值推入该参数即逐帧成流（核心 0.1s 节流防积压；通道波形需选「外部脉冲流」） |
 | 核心输出（设备→模块） | 固定 | `output_specs(family, index)` | id 为 `家族.信号`（多台 `家族.序号.信号`，如 `COYOTE.2.Battery`）+ 全局 `Action` |
 | 模块可写（喂给核心） | `META["params"]` | `link_params()` → `[(名, 说明)]` | 输入表表达式中以 `{名}` 引用 |
 | 模块可读（从核心读走） | `META["reads"]`（核心信号名 → {label, name, type}） | `read_params()` → `[(信号名, 说明)]` | 装载时空输出表按声明自动落地默认行，联动页据此做字段名联想 |
@@ -447,8 +447,9 @@ META = {
 `self.bridge` 上（联动页按 `inst.bridge.engine` 查找映射引擎以渲染实时值）；
 其 `dependencies` 同时演示了必装依赖与「!」可选依赖（OCR 增强）的写法。
 
-`dgstudio-modules-sound_link`（音频联动）演示 `ctx.push_pulse_stream` 外部脉冲流：
-采集麦克风/系统声音，维护左/右响度与左/右频率四个映射变量（`META["params"]`
-静态声明），每 0.1s 把频率（对数映射到设备逻辑频率 10-1000，响度作电平）推入
-核心「外部脉冲流 (PULSE_STREAM)」波形——波形由模块数据生成，不使用内置波形
-发生器；输入映射表空时按「响度×2 驱动强度」落地默认行。
+`dgstudio-modules-sound_link`（音频联动）演示**事件流周期推入外部脉冲流**：
+采集麦克风/系统声音，维护左/右响度、左/右频率与左/右推流值六个映射变量
+（`META["params"]` 静态声明），首次运行播种一张默认事件卡（周期 100ms）把
+推流值推入核心 `in_pulse_a/b` 参数——核心对脉冲流参数每拍生成一帧 100ms
+脉冲（0=静音帧，10-1000=逻辑频率），通道波形选「外部脉冲流 (PULSE_STREAM)」
+即成流，不使用内置波形发生器。
