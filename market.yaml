@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-06T16:30:58Z"
+generated: "2026-10-06T17:08:36Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -42,7 +42,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "音频联动"
-    version: "0.3.1"
+    version: "0.3.2"
     description: "纯输入联动：采集麦克风/系统声音，实时输出左/右响度、左/右频率与左右推流值六个映射变量；事件流周期把推流值推入核心「外部脉冲流」参数，输出频率跟随声音音高。"
     default_enabled: false
     requirements: ["numpy>=1.26", "sounddevice>=0.4.6", "pyaudiowpatch>=0.2.12.6; sys_platform == \"win32\""]
