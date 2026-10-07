@@ -20,10 +20,13 @@ dgstudio-modules-strength_logger─┘      拉取 + 解析 META / requirements.
 
 | 模块 | 仓库 | 版本 | 依赖 | 说明 |
 |---|---|---|---|---|
-| **VRChat OSC 联动** | [dgstudio-modules-osc_bridge](https://github.com/KelierAndes/dgstudio-modules-osc_bridge) | 1.5.0 | `python-osc` | 头像参数动态建表，核心参数映射表双向表达式驱动 |
-| **Alice in Cradle 联动** | [dgstudio-modules-alice_cradle](https://github.com/KelierAndes/dgstudio-modules-alice_cradle) | 0.6.0 | 无（标准库） | 游戏侧 MOD 上报 HP/MP 等数值，映射表求值驱动设备并回传状态；携带 BepInEx 游戏模组 |
-| **画面识别联动** | [dgstudio-modules-vision_link](https://github.com/KelierAndes/dgstudio-modules-vision_link) | 0.3.1 | `opencv-python-headless`（OCR 可选） | OpenCV 检测屏幕画面（颜色/图片/数值/数值条）产生实时参数 |
-| **强度日志示例** | [dgstudio-modules-strength_logger](https://github.com/KelierAndes/dgstudio-modules-strength_logger) | 0.1.0 | 无（标准库） | 最小完整示例：订阅强度变化写入日志，可作开发模板 |
+| **VRChat OSC 联动** | [dgstudio-modules-osc_bridge](https://github.com/KelierAndes/dgstudio-modules-osc_bridge) | 1.11.0 | `python-osc` | 头像参数动态建表，核心参数映射表双向表达式驱动 |
+| **Alice in Cradle 联动** | [dgstudio-modules-alice_cradle](https://github.com/KelierAndes/dgstudio-modules-alice_cradle) | 0.6.5 | 无（标准库） | 游戏侧 MOD 上报 HP/MP 等数值，映射表求值驱动设备并回传状态；携带 BepInEx 游戏模组 |
+| **画面识别联动** | [dgstudio-modules-vision_link](https://github.com/KelierAndes/dgstudio-modules-vision_link) | 0.3.2 | `opencv-python-headless`（OCR 可选） | OpenCV 检测屏幕画面（颜色/图片/数值/数值条）产生实时参数 |
+| **音频联动** | [dgstudio-modules-sound_link](https://github.com/KelierAndes/dgstudio-modules-sound_link) | 0.3.2 | `numpy` / `sounddevice` / `pyaudiowpatch` | 采集麦克风/系统声音输出响度、频率等映射变量，输出频率跟随声音音高 |
+| **灵猫边控联动** | [dgstudio-modules-margin_control](https://github.com/KelierAndes/dgstudio-modules-margin_control) | 0.11.0 | 无（标准库） | 灵猫气压 / 官方边控会话驱动的闭环边控，达限自动释放 |
+| **手柄震动联动** | [dgstudio-modules-xinput_oscillate](https://github.com/KelierAndes/dgstudio-modules-xinput_oscillate) | 0.2.1 | ViGEm 驱动 | 经虚拟手柄接收游戏原生 XInput 震动，按映射表派发到核心参数 |
+| **强度日志示例** | [dgstudio-modules-strength_logger](https://github.com/KelierAndes/dgstudio-modules-strength_logger) | 0.1.0 | 无（标准库） | 最小完整示例：订阅强度变化写入日志 |
 
 实际可用版本以 [`market.yaml`](market.yaml) 为准。
 
@@ -44,33 +47,7 @@ dgstudio-modules-strength_logger─┘      拉取 + 解析 META / requirements.
 「扫描模块目录」）后即可在模块页看到；第三方依赖需自行
 `pip install -r requirements.txt`。
 
-## 发布一个新模块
-
-1. 新建仓库，命名 **`dgstudio-modules-<模块 id>`**（必须以该前缀开头）；
-2. 仓库根放置：
-   * `plugin.py` —— 模块入口（`META` 纯字面量 + 模块类），`META["id"]` 与
-     仓库后缀一致；
-   * `requirements.txt` —— pip 依赖串列表（可选文件；「!」前缀 = 可选依赖，
-     以 `--no-deps` 尽力安装、失败不阻断）；
-   * `README.md` —— 会随模块一起下载到用户本地；
-3. 推送后等待 Actions 重建（每日自动，或到总仓库手动 Run workflow
-   「build market」），`market.yaml` 出现你的模块即上架；
-4. 也可以在总仓库的 [`sources.txt`](sources.txt) 里追加一行仓库名作为兜底。
-
-更新模块 = 子仓库提交新版本 + 等待/触发总仓库重建 market.yaml + 用户在
-模块页点「更新」。
-
-## 清单生成
-
-* `_tools/build_market.py`：
-  * CI 模式（默认）：`GITHUB_TOKEN` 经 GitHub API 搜索 `dgstudio-modules-`
-    前缀仓库 → 逐仓库读取 `plugin.py`（AST 解析 META）、`requirements.txt`、
-    文件树，写出 `market.yaml`；
-  * 本地模式（`--local <目录>`）：扫描目录下匹配前缀的仓库文件夹直接生成，
-    便于离线开发；
-* `.github/workflows/market.yml`：push / 每日定时 / 手动触发，重建后自动提交。
-
-## 开发文档
+## 模块 API
 
 模块 API（生命周期、`ModuleContext`、配置声明、按键动作、联动参数模型）见
 **[EXTENSIONS.md](EXTENSIONS.md)**。

@@ -1,4 +1,6 @@
-r"""聚合 dgstudio-modules-* 子仓库，生成模块市场清单 market.yaml。
+from __future__ import annotations
+
+DESCRIPTION = """聚合 dgstudio-modules-* 子仓库，生成模块市场清单 market.yaml。
 
 DGStudio「模块」页只读取本文件（总仓库根的 market.yaml），不直接访问
 各子仓库。清单由 GitHub Actions 定期重建，也可本地生成后提交：
@@ -6,8 +8,8 @@ DGStudio「模块」页只读取本文件（总仓库根的 market.yaml），不
     # CI / 联网：经 GitHub API 发现 owner 名下 dgstudio-modules-* 仓库
     GITHUB_TOKEN=xxx python _tools/build_market.py --owner KelierAndes
 
-    # 本地离线：扫描目录下匹配前缀的仓库文件夹（如 D:\ 下的各仓库）
-    python _tools/build_market.py --local D:\
+    # 本地离线：扫描目录下匹配前缀的仓库文件夹（如 D:\\ 下的各仓库）
+    python _tools/build_market.py --local D:\\
 
 规则（与 AstrBot 插件仓库一致的模式）：
 * 每个模块一个独立仓库，命名 dgstudio-modules-<模块 id>；
@@ -15,7 +17,6 @@ DGStudio「模块」页只读取本文件（总仓库根的 market.yaml），不
   （pip 依赖串，「!」前缀 = 可选依赖 --no-deps 安装）、README.md；
 * 输出按模块 id 排序，字符串以 JSON 风格双引号写入（合法 YAML）。
 """
-from __future__ import annotations
 
 import argparse
 import ast
@@ -35,8 +36,6 @@ SKIP_DIRS = {".git", "__pycache__", "_deps"}
 SKIP_SUFFIX = (".downloading", ".old")
 USER_AGENT = "DGStudio-MarketBuilder/1.0"
 
-
-# ------------------------------------------------------------------ 解析
 
 def read_meta(plugin_py_text: str) -> dict:
     import re
@@ -88,10 +87,7 @@ def build_entry(repo: str, meta: dict, requirements: list[str],
     }
 
 
-# ------------------------------------------------------------------ YAML
-
 def _y(value) -> str:
-    """JSON 风格序列化：双引号字符串与流式列表均为合法 YAML。"""
     return json.dumps(value, ensure_ascii=False)
 
 
@@ -120,10 +116,7 @@ def emit_market(entries: list[dict], out_path: str) -> None:
         f.write("\n".join(lines) + "\n")
 
 
-# ------------------------------------------------------------------ 本地模式
-
 def find_module_dir(repo_dir: str) -> str:
-    """模块在仓库内的相对路径：仓库根直放（""）或 modules/<id>/ 嵌套。"""
     if os.path.isfile(os.path.join(repo_dir, "plugin.py")):
         return ""
     for entry in sorted(os.listdir(os.path.join(repo_dir, "modules")))             if os.path.isdir(os.path.join(repo_dir, "modules")) else []:
@@ -172,8 +165,6 @@ def discover_local(base_dir: str, prefix: str) -> list[str]:
     return found
 
 
-# ------------------------------------------------------------------ CI 模式
-
 def _http_json(url: str, token: str) -> dict:
     request = urllib.request.Request(url, headers={
         "User-Agent": USER_AGENT,
@@ -208,7 +199,6 @@ def discover_remote(owner: str, prefix: str, token: str) -> list[str]:
 def collect_remote(owner: str, repo: str, token: str) -> dict:
     info = _http_json(f"https://api.github.com/repos/{owner}/{repo}", token)
     branch = str(info.get("default_branch") or DEFAULT_BRANCH)
-    # 文件内容优先走 git blobs API（无 raw CDN 传播延迟），raw 兜底
     blobs: dict[str, str] = {}
 
     def blob_text(path: str) -> str:
@@ -254,10 +244,8 @@ def collect_remote(owner: str, repo: str, token: str) -> dict:
                        path=rel)
 
 
-# ------------------------------------------------------------------ 入口
-
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument("--owner", default=DEFAULT_OWNER)
     parser.add_argument("--prefix", default=DEFAULT_PREFIX)
     parser.add_argument("--out", default="market.yaml")
