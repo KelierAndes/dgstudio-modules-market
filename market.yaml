@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-09T10:35:20Z"
+generated: "2026-10-09T12:16:49Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -31,7 +31,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "VRChat OSC 联动"
-    version: "1.13.0"
+    version: "1.13.1"
     description: "设备接入即向核心变量表登记全部可读 / 可写参数（变量名 = OSC 路径，带可读 / 可写标记，由模块实时维护不落配置），事件流画布用读数 / 回传卡片与读写变量卡片直接收发。"
     default_enabled: false
     requirements: ["python-osc>=1.9"]
@@ -42,7 +42,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "音频联动"
-    version: "0.4.0"
+    version: "0.4.1"
     description: "纯输入联动：麦克风与系统声音（WASAPI 回环）双路同时监听，每路各输出左右响度 / 左右频率八个映射变量、各维护一张映射表；频率值直接推入核心「外部脉冲流」参数（0.1s 一拍），输出频率跟随声音音高。"
     default_enabled: false
     requirements: ["numpy>=1.26", "sounddevice>=0.4.6", "pyaudiowpatch>=0.2.12.6; sys_platform == \"win32\""]
@@ -64,7 +64,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "画面识别联动"
-    version: "0.3.4"
+    version: "0.3.5"
     description: "OpenCV 通用画面识别：以「参数名 ← 检测行为」自定义实时参数（检测颜色 / 图片 / 数值 / 数值条，区域例图可截图选取，数字/文字 RapidOCR 识别，OCR 跑在应用自带 Python 的子进程里），经核心参数映射表驱动设备。"
     default_enabled: false
     requirements: ["opencv-python-headless>=4.10"]
