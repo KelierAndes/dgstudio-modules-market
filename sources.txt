@@ -2,7 +2,9 @@
 # 正常情况下 CI 会自动发现 owner 名下所有 dgstudio-modules-* 仓库；
 # 新建模块仓库后可在此追加一行以立即纳入，无需等待搜索索引。
 dgstudio-modules-alice_cradle
+dgstudio-modules-margin_control
 dgstudio-modules-osc_bridge
+dgstudio-modules-sound_link
 dgstudio-modules-strength_logger
 dgstudio-modules-vision_link
 dgstudio-modules-xinput_oscillate

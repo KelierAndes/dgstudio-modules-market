@@ -99,7 +99,7 @@ class HelloModule(ModuleBase):
   鸭子类型缺失的 `start`/`stop`/`is_running` 自动补空实现；
 * `META` 可选键：`settings_key`、`dependencies`（依赖声明，§1.4）、
   `actions`（按键动作静态声明，§3）、`config`（配置项声明，§4.1）、
-  `params` / `reads` / `dynamic_params`（联动参数，§4.2）、`default_enabled`、
+  `params` / `reads` / `dynamic_params`（模块参数与读数声明，§4.2）、`default_enabled`、
   `mods`（游戏模组一键安装：模块内 `mods/` 里的文件释放到
   `<游戏根>/<dest>`，`marker` 可执行文件名用于自动扫描游戏根目录）。
 
@@ -227,19 +227,22 @@ ctx.set_intensity_param("fire_strength_b", 60, slot_id=sid)  # B 通道独立开
 | `ctx.wave_selection()` | `{"A": 名, "B": 名}` |
 | `ctx.wave_order("COYOTE")` | 该家族波形名序列（静默/持续在前） |
 
-**控制命令**（引擎公开方法，返回协程——异步上下文直接 `await`，否则 `ctx.submit`）：
+**控制命令**：模块是**纯输入设备**，一切设备动作都不再由模块下发。核心
+`ModuleContext` 保留这些方法名（老模块不会 import 失败），但调用会被拦截：返回
+`None` 并写一条日志「已拦截模块直写设备输出：set_strength() —— 模块只登记变量，
+设备动作请在事件流里用写入卡片驱动」。
 
-| 方法 | 说明 |
+| 方法 | 现状 |
 |---|---|
-| `ctx.set_strength(channel, value, slot_id=None)` | 直接设置（自动钳制与量化） |
-| `ctx.add_strength(channel, delta, slot_id=None)` | 增减（步长/量化/上限保护） |
-| `ctx.reset_strength(channel, slot_id=None)` | 归零：强度清零 + 波形切回静默 |
-| `ctx.set_wave(channel, name, slot_id=None)` | 切波形（不中断强度会话） |
-| `ctx.push_pulse_stream(frequency, channel="A", level=100, slot_id=None)` | **外部脉冲流直推 API**：每 0.1s 推入一次频率数据（逻辑频率 10-1000，电平 0-100，0=该帧静音），核心把每次推送作为**最新帧**刷新播放（实时跟随；追加历史会因播放循环积压导致频率严重滞后）——波形由模块数据生成，不使用内置波形发生器。仅当该通道波形选中「外部脉冲流 (PULSE_STREAM)」时落地，其余情况静默丢弃（可常推不息）。返回协程：异步上下文直接 `await`，否则 `ctx.submit`。蓝牙实时逐帧跟随；V4 随补批节奏（≤1s）跟随；V3 为尽力而为（整段窗口重发）。**常规路径是事件流周期卡**：把变量推入核心输入参数 `in_pulse_a/b`（数值推入，见 §4.2），经同一落地链路且自带 0.1s 节流 |
-| `ctx.fire(slot_id=None, duration_s=None, channel=None)` | 一键开火（定时，到时自动恢复强度/波形）；`channel`="A"/"B" 只开火该通道，缺省双通道。需 Socket V4 / 蓝牙连接 |
-| `ctx.fire_start(slot_id=None, channel=None)` / `fire_stop(slot_id=None, channel=None)` | 按住持续开火（60 秒安全超时，结束恢复原强度/波形）；`channel`="A"/"B" 只动该通道，缺省双通道。开火保持按 (设备, 通道) 独立记账 |
-| `ctx.zap(channel, seconds, slot_id=None)` | 定时爆发：**仅对指定通道**开火（通道分离语义；需双通道齐射请分别调 A/B 或用 `ctx.fire` 不带 channel） |
-| `ctx.emergency_stop()` | 急停：全部输出设备清零 + 波形重置（取消全部通道的开火保持） |
+| `ctx.set_strength` / `add_strength` / `reset_strength` | 拦截（只记日志，不产生输出） |
+| `ctx.set_wave` / `ctx.set_intensity_param` | 拦截 |
+| `ctx.push_pulse_stream` | 拦截——脉冲流改由事件流写入卡推入核心输入参数 `in_pulse_a/b`（自带 0.1s 节流，逻辑频率 10-1000、电平 0-100） |
+| `ctx.fire` / `fire_start` / `fire_stop` / `ctx.zap` | 拦截——开火改接「郊狼 / 负鼠开火」等核心写入卡 |
+| `ctx.emergency_stop()` | **仍然直通**：安全闸，任何模块都能急停（清零全部输出、取消开火保持） |
+
+要驱动设备，就把数据登记成变量、由用户在「事件流」画布上用**写入卡片**接线
+（§4.2）。同一份外部数据因此可以接不同设备、加运算与分支，而不必每个模块各写
+一套下发逻辑。
 
 ---
 
@@ -344,45 +347,44 @@ META = {
 | `bool` | 开关 | — |
 | `choice` | 下拉（只能选预设值） | `choices` |
 | `map` | 每个子键一行文本框 | — |
-| `list` + `rows: "in"/"out"` | 输入/输出映射表（§4.2） | — |
 
 公共字段：`label`（显示名）、`default`、`desc`（说明列）、`group`
-（联动页落位：`map` 组渲染成映射表，其余组进「模块设置」）。
+（同一模块卡片内的分组标题，不再是「联动页」的落位标记）。
 
-### 4.2 联动参数模型（核心参数 + 双向映射表）
+### 4.2 变量登记模型（模块 → 事件流变量表）
 
-统一模型：**核心参数**（固定定义于 `dglab/params.py`，名称不可改）+
-**模块侧参数**（模块自行声明）+ **两张映射表**连接两者。联动页每张模块
-卡片都按「输出映射表 → 输入映射表 → 模块设置」渲染，全部家族/模块共用。
+模块不驱动设备，只**向核心登记变量**；用户在「事件流」页把变量接到写入卡片上，
+动作才会发生。登记有两个入口，核心按名字合并（方向取并集、`renamable` 取或），
+**两处必须给出一致的方向**，否则合并结果会多出「读写」行或互相翻转：
 
-| 侧向 | 声明方式 | 运行期覆写 | 说明 |
-|---|---|---|---|
-| 核心输入（模块→设备） | 固定 | `core_inputs()` 列全部条目 | id 为 `in_*`（郊狼）/ `in_ovc_*`（负鼠）+ 全局 `in_emergency`；含 key/label/type/range。开火按通道独立：`in_fire` / `in_ovc_fire`（双通道）与 `in_fire_a/b`、`in_ovc_fire_a/b`（仅本通道，Bool）。**脉冲流数值推入**：`in_pulse_a/b`、`in_ovc_pulse_a/b`（Int 0-1000）——0=静音帧、10-1000=脉冲频率（逻辑频率），事件流「周期更新」卡片每拍把变量值推入该参数即实时成流（核心 0.1s 节流防积压；每推一帧作为最新帧刷新播放，通道波形需选「外部脉冲流」）。**家族严格派发**：带家族的核心参数只派发到该家族设备（目标家族不在场即跳过，不跨设备兜底）。帧电平可经模块适配层 `pulse_level(channel)` 跟随响度；负鼠振动设备由核心把频率合成为振幅方波图案（速率=频率/100，相位跨帧连续） |
-| 核心输出（设备→模块） | 固定 | `output_specs(family, index)` | id 为 `家族.信号`（多台 `家族.序号.信号`，如 `COYOTE.2.Battery`）+ 全局 `Action` |
-| 模块可写（喂给核心） | `META["params"]` | `link_params()` → `[(名, 说明)]` | 输入表表达式中以 `{名}` 引用 |
-| 模块可读（从核心读走） | `META["reads"]`（核心信号名 → {label, name, type}） | `read_params()` → `[(信号名, 说明)]` | 装载时空输出表按声明自动落地默认行，联动页据此做字段名联想 |
-| OSC 动态参数 | `META["dynamic_params"]: true` | — | 头像参数双向自定义：行带 `name`，默认名/直传表达式自动生成，可自由改 |
+| 钩子 | 返回 | 用途 |
+|---|---|---|
+| `link_params()` | `[{name, label, dir, type, renamable}]` | 静态 / 半静态参数清单。也可以返回 `(名, 说明)` 元组，但元组带不上方向与 `renamable`，会被当成只读的系统参数 |
+| `temp_specs()` | `[{key\|name, label, dir, type, desc, renamable}]` | 随运行状态实时算出的行（如 OSC 按当前在连设备算出全部路径变量；设备没连上就返回空，不预登记） |
+| `rename_var(old, new)` | 空串 = 成功，中文 = 失败原因 | 用户在变量表里改这一行的名字时调用：模块改自己的收发地址，返回空串后核心自动改接画布上引用旧名的卡片并强制刷新登记 |
+| `read_params()` | — | **已退役**：核心不再据此登记，模块里可直接删 |
 
-**两张映射表（配置文件只保存这两张）**：
+`dir` 三取一：`in` = 宿主可读（模块产出的读数，**不写时的默认值**）、
+`out` = 宿主可写（用户能把数值写回模块 / 设备）、`inout` = 双向。方向按**参数
+语义**判定，不要按变量名路径判定：能被驱动下去的量（强度、波形、开火、脉冲频率…）
+标可写，只读得出的量（电量、连接状态、通道探活、气压…）标可读，既下发又回读的
+行标读写。`renamable: True` 的行落在变量表的「可改名参数」栏（名称那一格就是
+输入框），否则落在「系统参数 · 不可改名」栏。
 
-* `mappings` 输入表，行 `{param: 核心输入id, expr: 表达式}`——表达式以
-  `{变量}` 引用模块可写参数与核心输出参数，自由四则运算，结果**取整钳制**
-  到该参数 `range` 后派发设备动作；`expr` 留空 = 同名直传。
-  **核心参数名固定，下拉选择不可改。**
-* `outputs` 输出表，行 `{param: 核心输出id, name: 模块侧字段名, expr, type}`
-  ——求值后回传模块（OSC 写 `/avatar/parameters/<name>`，游戏模块进
-  `GET /data`）。**来源参数固定，`name` 可由用户自由改名。**
+值的来与去：模块写自己的信号表（`instance.signals` / `ctx.set_temp(key, value)`），
+核心的共享值空间据此给变量供实时值；反方向由事件流的写入卡片调 `ctx.set_temp`
+落回模块，模块在自己的循环里取用（如 OSC 把 `avatar/parameters/<名>` 的值按同名
+地址回传）。
 
-联动页对两张表提供增删行与「实时值」预览；「保存设置」后宿主对暴露
-`reload_config()` 的运行中模块调用它，映射改动**热生效**；桥接地址/端口等
-改动仍需重开模块。联动页卡片**只显示已安装（启用）的模块**——装卸即时增删
-卡片，未安装模块的配置仍持久化、安装后即出现；`config_init` 模块不出卡片，
-专责配置装载/保存/导出。已启用且声明了 `META["config"]` 的模块在模块页自动
-出现「联动设置」跳转链接。
+用户在画布上的接线手段（模块无需实现）：读数卡 / 写入卡由变量表**按住行左侧的
+拖动柄拖到画布**生成；核心写入卡（强度 / 波形 / 开火 / `in_pulse_a/b` 脉冲流等）
+与核心读出卡（`COYOTE.Battery`、`Action` 等）在卡片面板的「核心变量」分类里，
+核心设备读数不进变量表。旧版的两张映射表（`mappings` / `outputs`）已退役，
+模块配置里若还留着这类键，`on_load` 里清掉即可。
 
 > 默认头像参数名的生成规则（设备前缀 + 信号模板）在核心 `dglab/naming.py`
 > （`default_input_name` / `default_output_name` / `device_osc_names`），
-> 模块与联动页共用。
+> 改名覆盖表写在模块设置文件的 `param_names` 里，模块与核心共用。
 
 ---
 
@@ -440,16 +442,19 @@ META = {
 `ctx.log` / `ctx.events` 基本用法、高频事件限速。复制该目录、改 `META.id`、
 按 §2 的 API 实现自己的联动逻辑即可。
 
-`modules/vision_link/` 是进阶示例（OpenCV 画面识别）：不声明静态 `META["params"]`，
-而是按用户配置的检测参数**动态返回 `link_params()`**；用 `META["realtime_manager"]`
-让联动页实时数据区渲染「参数名 ← 检测行为」的自定义管理块（页面按标志渲染，
-模块零界面代码），检测配置存设置文件的 `detectors` 列表；运行时对象挂在
-`self.bridge` 上（联动页按 `inst.bridge.engine` 查找映射引擎以渲染实时值）；
-其 `dependencies` 同时演示了必装依赖与「!」可选依赖（OCR 增强）的写法。
+`modules/vision_link/` 是进阶示例（OpenCV 画面识别）：不声明静态
+`META["params"]`，而是按用户配置的检测参数**动态返回 `link_params()` /
+`temp_specs()`**，把每个检测量登记成变量表的只读行；用
+`META["realtime_manager"]` 让「模块」页的卡片渲染「参数名 ← 检测行为」的
+自定义管理块（页面按标志渲染，模块零界面代码），检测配置存设置文件的
+`detectors` 列表；运行时对象挂在 `self.bridge` 上（页面按 `inst.bridge.engine`
+查找以显示实时值）；其 `dependencies` 同时演示了必装依赖与「!」可选依赖
+（OCR 增强）的写法。
 
-`dgstudio-modules-sound_link`（音频联动）演示**事件流周期推入外部脉冲流**：
-采集麦克风/系统声音，维护左/右响度、左/右频率与左/右推流值六个映射变量
-（`META["params"]` 静态声明），首次运行播种一张默认事件卡（周期 100ms）把
-推流值推入核心 `in_pulse_a/b` 参数——核心对脉冲流参数每拍生成一帧 100ms
-脉冲（0=静音帧，10-1000=逻辑频率），通道波形选「外部脉冲流 (PULSE_STREAM)」
-即成流，不使用内置波形发生器。
+`dgstudio-modules-sound_link`（音频联动）演示**只登记、不下发**：采集麦克风与
+系统声音（WASAPI 回环），维护左/右响度、左/右频率共 8 个只读变量
+（`META["params"]` 静态声明 + `link_params()` 暴露）。要让输出频率跟随音高、
+电平跟随响度，由用户在事件流里把「响度 / 频率」读数卡接进核心写入卡
+`in_pulse_a/b`——核心对脉冲流参数每拍生成一帧 100ms 脉冲（0=静音帧，
+10-1000=逻辑频率），通道波形选「外部脉冲流 (PULSE_STREAM)」即成流，
+自带 0.1s 节流，不使用内置波形发生器。
