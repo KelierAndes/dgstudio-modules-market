@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-10T19:21:42Z"
+generated: "2026-10-10T19:22:04Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -13,7 +13,7 @@ modules:
     description: "游戏侧 MOD 上报 HP/MP 等命名数值，本模块把它们与设备读数登记成变量供「事件流」取用，并把设备读数按同名字段回传游戏（HTTP + JSON）；本模块不下发设备动作。"
     default_enabled: false
     requirements: []
-    files: [".gitignore", "AliceInCradleLink/AliceInCradleLink.csproj", "AliceInCradleLink/DataClient.cs", "AliceInCradleLink/EventHooks.cs", "AliceInCradleLink/LinkConfig.cs", "AliceInCradleLink/LinkRunner.cs", "AliceInCradleLink/OverlayUi.cs", "AliceInCradleLink/Plugin.cs", "AliceInCradleLink/VitalReader.cs", "AliceInCradleLink/VitalSampler.cs", "DEVELOPMENT.md", "LICENSE", "README.md", "_vendor/bepinex-core/0Harmony.dll", "_vendor/bepinex-core/BepInEx.dll", "modules/__init__.py", "modules/alice_cradle/__init__.py", "modules/alice_cradle/flow/AliceInCradle.json", "modules/alice_cradle/mods/AliceInCradleLink.dll", "modules/alice_cradle/plugin.py", "modules/alice_cradle/requirements.txt", "modules/alice_cradle/server.py", "modules/alice_cradle/vendor/BepInEx_win_x64_5.4.23.5.zip", "tests/_bootstrap.py", "tests/test_alice_cradle.py"]
+    files: [".gitignore", "AliceInCradleLink/AliceInCradleLink.csproj", "AliceInCradleLink/DataClient.cs", "AliceInCradleLink/EventHooks.cs", "AliceInCradleLink/LinkConfig.cs", "AliceInCradleLink/LinkRunner.cs", "AliceInCradleLink/OverlayUi.cs", "AliceInCradleLink/Plugin.cs", "AliceInCradleLink/VitalReader.cs", "AliceInCradleLink/VitalSampler.cs", "LICENSE", "README.md", "_vendor/bepinex-core/0Harmony.dll", "_vendor/bepinex-core/BepInEx.dll", "modules/__init__.py", "modules/alice_cradle/__init__.py", "modules/alice_cradle/flow/AliceInCradle.json", "modules/alice_cradle/mods/AliceInCradleLink.dll", "modules/alice_cradle/plugin.py", "modules/alice_cradle/requirements.txt", "modules/alice_cradle/server.py", "modules/alice_cradle/vendor/BepInEx_win_x64_5.4.23.5.zip", "tests/_bootstrap.py", "tests/test_alice_cradle.py"]
   - id: "margin_control"
     repo: "dgstudio-modules-margin_control"
     path: "modules/margin_control"
@@ -24,7 +24,7 @@ modules:
     description: "灵猫气压 / 官方边控会话 → 闭环边控（事件流数据面）：事件流把 BMTR.Pressure/EdgeState 写入模块变量，闭环判定后发布刺激/惩罚强度等变量，设备动作由事件流的写入卡片驱动，模块自身不下发设备命令；达限后的下一次到边即释放边（不惩罚、刺激器=助力、循环置零）。"
     default_enabled: false
     requirements: []
-    files: [".gitignore", "DEVELOPMENT.md", "LICENSE", "README.md", "modules/__init__.py", "modules/margin_control/__init__.py", "modules/margin_control/bridge.py", "modules/margin_control/flow/MarginControl.json", "modules/margin_control/plugin.py", "modules/margin_control/requirements.txt", "tests/_bootstrap.py", "tests/test_margin_control.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/margin_control/__init__.py", "modules/margin_control/bridge.py", "modules/margin_control/flow/MarginControl.json", "modules/margin_control/plugin.py", "modules/margin_control/requirements.txt", "tests/_bootstrap.py", "tests/test_margin_control.py"]
   - id: "osc_bridge"
     repo: "dgstudio-modules-osc_bridge"
     path: "modules/osc_bridge"
@@ -35,7 +35,7 @@ modules:
     description: "设备接入即向核心变量表登记全部可读 / 可写参数（变量名 = OSC 路径，带可读 / 可写标记，落在变量表可改名栏，改名即改收发地址），事件流画布用读数 / 回传卡片直接收发。"
     default_enabled: false
     requirements: ["python-osc>=1.9"]
-    files: [".gitignore", "DEVELOPMENT.md", "LICENSE", "README.md", "modules/__init__.py", "modules/osc_bridge/__init__.py", "modules/osc_bridge/bindings/VRChatOSC.json", "modules/osc_bridge/bridge.py", "modules/osc_bridge/flow/VRChatOSC.json", "modules/osc_bridge/plugin.py", "modules/osc_bridge/requirements.txt", "modules/osc_bridge/wheels/python_osc-1.10.2-py3-none-any.whl", "tests/_bootstrap.py", "tests/test_auto_expose.py", "tests/test_multi_device.py", "tests/test_osc_defaults.py", "tests/test_osc_runtime.py", "tests/test_param_rename.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/osc_bridge/__init__.py", "modules/osc_bridge/bindings/VRChatOSC.json", "modules/osc_bridge/bridge.py", "modules/osc_bridge/flow/VRChatOSC.json", "modules/osc_bridge/plugin.py", "modules/osc_bridge/requirements.txt", "modules/osc_bridge/wheels/python_osc-1.10.2-py3-none-any.whl", "tests/_bootstrap.py", "tests/test_auto_expose.py", "tests/test_multi_device.py", "tests/test_osc_defaults.py", "tests/test_osc_runtime.py", "tests/test_param_rename.py"]
   - id: "sound_link"
     repo: "dgstudio-modules-sound_link"
     path: "modules/sound_link"
@@ -46,7 +46,7 @@ modules:
     description: "纯输入采集：麦克风与系统声音（WASAPI 回环）双路同时监听，每路各输出左右响度 / 左右频率八个只读变量。模块只采集与登记变量、绝不直接驱动设备；脉冲流推入与设备动作一律在「事件流」页用写入卡（如范围映射卡把频率变量映射到核心「外部脉冲流频率」）完成，由用户自行连线。"
     default_enabled: false
     requirements: ["numpy>=1.26", "sounddevice>=0.4.6", "pyaudiowpatch>=0.2.12.6; sys_platform == \"win32\""]
-    files: [".gitignore", "DEVELOPMENT.md", "LICENSE", "README.md", "modules/__init__.py", "modules/sound_link/__init__.py", "modules/sound_link/bridge.py", "modules/sound_link/flow/SoundLink.json", "modules/sound_link/plugin.py", "modules/sound_link/requirements.txt", "modules/sound_link/wheels/cffi-2.1.1-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/numpy-2.5.3-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/pyaudiowpatch-0.2.12.8-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/pycparser-3.0-py3-none-any.whl", "modules/sound_link/wheels/sounddevice-0.5.6-py3-none-win_amd64.whl", "tests/_bootstrap.py", "tests/test_sound_link.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/sound_link/__init__.py", "modules/sound_link/bridge.py", "modules/sound_link/flow/SoundLink.json", "modules/sound_link/plugin.py", "modules/sound_link/requirements.txt", "modules/sound_link/wheels/cffi-2.1.1-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/numpy-2.5.3-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/pyaudiowpatch-0.2.12.8-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/pycparser-3.0-py3-none-any.whl", "modules/sound_link/wheels/sounddevice-0.5.6-py3-none-win_amd64.whl", "tests/_bootstrap.py", "tests/test_sound_link.py"]
   - id: "strength_logger"
     repo: "dgstudio-modules-strength_logger"
     path: "modules/strength_logger"
@@ -57,7 +57,7 @@ modules:
     description: "演示模块 API：订阅强度变化写入应用日志（每设备限速 1 条/秒）。可作为开发新模块的模板。"
     default_enabled: false
     requirements: []
-    files: [".gitignore", "DEVELOPMENT.md", "LICENSE", "README.md", "modules/__init__.py", "modules/strength_logger/plugin.py", "modules/strength_logger/requirements.txt"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/strength_logger/plugin.py", "modules/strength_logger/requirements.txt"]
   - id: "vision_link"
     repo: "dgstudio-modules-vision_link"
     path: "modules/vision_link"
@@ -68,7 +68,7 @@ modules:
     description: "OpenCV 通用画面识别：以「参数名 ← 检测行为」登记实时只读变量（检测颜色 / 图片 / 数值 / 数值条，区域例图可截图选取，数字/文字 RapidOCR 识别，OCR 跑在应用自带 Python 的子进程里）；本模块只发布变量，设备动作请在「事件流」页用写入卡片按这些变量编排。"
     default_enabled: false
     requirements: ["opencv-python-headless>=4.10"]
-    files: [".gitignore", "DEVELOPMENT.md", "LICENSE", "README.md", "modules/__init__.py", "modules/vision_link/__init__.py", "modules/vision_link/bridge.py", "modules/vision_link/detect.py", "modules/vision_link/ocr_env.py", "modules/vision_link/ocr_wheels/onnxruntime-1.24.1-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pillow-11.3.0-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pyclipper-1.4.0-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pyyaml-6.0.3-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/rapidocr_onnxruntime-1.4.4-py3-none-any.whl", "modules/vision_link/ocr_wheels/shapely-2.1.2-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/six-1.17.0-py2.py3-none-any.whl", "modules/vision_link/ocr_wheels/tqdm-4.70.1-py3-none-any.whl", "modules/vision_link/ocr_worker.py", "modules/vision_link/plugin.py", "modules/vision_link/requirements.txt", "modules/vision_link/wheels/numpy-2.5.3-cp314-cp314-win_amd64.whl", "modules/vision_link/wheels/opencv_python_headless-5.0.0.93-cp37-abi3-win_amd64.whl", "tests/_bootstrap.py", "tests/test_ocr_env.py", "tests/test_vision_link.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/vision_link/__init__.py", "modules/vision_link/bridge.py", "modules/vision_link/detect.py", "modules/vision_link/ocr_env.py", "modules/vision_link/ocr_wheels/onnxruntime-1.24.1-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pillow-11.3.0-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pyclipper-1.4.0-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pyyaml-6.0.3-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/rapidocr_onnxruntime-1.4.4-py3-none-any.whl", "modules/vision_link/ocr_wheels/shapely-2.1.2-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/six-1.17.0-py2.py3-none-any.whl", "modules/vision_link/ocr_wheels/tqdm-4.70.1-py3-none-any.whl", "modules/vision_link/ocr_worker.py", "modules/vision_link/plugin.py", "modules/vision_link/requirements.txt", "modules/vision_link/wheels/numpy-2.5.3-cp314-cp314-win_amd64.whl", "modules/vision_link/wheels/opencv_python_headless-5.0.0.93-cp37-abi3-win_amd64.whl", "tests/_bootstrap.py", "tests/test_ocr_env.py", "tests/test_vision_link.py"]
   - id: "xinput_oscillate"
     repo: "dgstudio-modules-xinput_oscillate"
     path: "modules/xinput_oscillate"
@@ -79,4 +79,4 @@ modules:
     description: "经 ViGEm 虚拟手柄接收游戏原生 XInput 震动派发（不注入游戏），把震动强度与状态登记为只读变量；设备动作请在「事件流」页用写入卡片按这些变量编排。支持键盘键位映射（无手柄调试）、实体手柄透传与回环自测。"
     default_enabled: false
     requirements: []
-    files: [".gitignore", "DEVELOPMENT.md", "LICENSE", "README.md", "modules/__init__.py", "modules/xinput_oscillate/__init__.py", "modules/xinput_oscillate/bin/LICENSE.ViGEmClient.txt", "modules/xinput_oscillate/bin/ViGEmClient.dll", "modules/xinput_oscillate/bridge.py", "modules/xinput_oscillate/flow/xinput.json", "modules/xinput_oscillate/plugin.py", "modules/xinput_oscillate/vigem.py", "modules/xinput_oscillate/virtualpad.py", "tests/_bootstrap.py", "tests/test_bridge.py", "tests/test_plugin.py", "tests/test_vigem_integration.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/xinput_oscillate/__init__.py", "modules/xinput_oscillate/bin/LICENSE.ViGEmClient.txt", "modules/xinput_oscillate/bin/ViGEmClient.dll", "modules/xinput_oscillate/bridge.py", "modules/xinput_oscillate/flow/xinput.json", "modules/xinput_oscillate/plugin.py", "modules/xinput_oscillate/vigem.py", "modules/xinput_oscillate/virtualpad.py", "tests/_bootstrap.py", "tests/test_bridge.py", "tests/test_plugin.py", "tests/test_vigem_integration.py"]
