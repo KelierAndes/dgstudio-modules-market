@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-10T08:39:51Z"
+generated: "2026-10-10T12:42:24Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -42,11 +42,11 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "音频联动"
-    version: "0.5.0"
+    version: "0.5.1"
     description: "纯输入采集：麦克风与系统声音（WASAPI 回环）双路同时监听，每路各输出左右响度 / 左右频率八个只读变量。模块只采集与登记变量、绝不直接驱动设备；脉冲流推入与设备动作一律在「事件流」页用写入卡（如范围映射卡把频率变量映射到核心「外部脉冲流频率」）完成，由用户自行连线。"
     default_enabled: false
     requirements: ["numpy>=1.26", "sounddevice>=0.4.6", "pyaudiowpatch>=0.2.12.6; sys_platform == \"win32\""]
-    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/sound_link/__init__.py", "modules/sound_link/bridge.py", "modules/sound_link/plugin.py", "modules/sound_link/requirements.txt", "modules/sound_link/wheels/cffi-2.1.1-cp312-cp312-win_amd64.whl", "modules/sound_link/wheels/numpy-2.5.3-cp312-cp312-win_amd64.whl", "modules/sound_link/wheels/pyaudiowpatch-0.2.12.8-cp312-cp312-win_amd64.whl", "modules/sound_link/wheels/pycparser-3.0-py3-none-any.whl", "modules/sound_link/wheels/sounddevice-0.5.6-py3-none-win_amd64.whl", "tests/_bootstrap.py", "tests/test_sound_link.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/sound_link/__init__.py", "modules/sound_link/bridge.py", "modules/sound_link/plugin.py", "modules/sound_link/requirements.txt", "modules/sound_link/wheels/cffi-2.1.1-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/numpy-2.5.3-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/pyaudiowpatch-0.2.12.8-cp314-cp314-win_amd64.whl", "modules/sound_link/wheels/pycparser-3.0-py3-none-any.whl", "modules/sound_link/wheels/sounddevice-0.5.6-py3-none-win_amd64.whl", "tests/_bootstrap.py", "tests/test_sound_link.py"]
   - id: "strength_logger"
     repo: "dgstudio-modules-strength_logger"
     path: "modules/strength_logger"
@@ -64,11 +64,11 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "画面识别联动"
-    version: "0.4.0"
+    version: "0.4.1"
     description: "OpenCV 通用画面识别：以「参数名 ← 检测行为」登记实时只读变量（检测颜色 / 图片 / 数值 / 数值条，区域例图可截图选取，数字/文字 RapidOCR 识别，OCR 跑在应用自带 Python 的子进程里）；本模块只发布变量，设备动作请在「事件流」页用写入卡片按这些变量编排。"
     default_enabled: false
     requirements: ["opencv-python-headless>=4.10"]
-    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/vision_link/__init__.py", "modules/vision_link/bridge.py", "modules/vision_link/detect.py", "modules/vision_link/ocr_env.py", "modules/vision_link/ocr_worker.py", "modules/vision_link/plugin.py", "modules/vision_link/requirements.txt", "modules/vision_link/wheels/numpy-2.5.3-cp312-cp312-win_amd64.whl", "modules/vision_link/wheels/onnxruntime-1.19.2-cp312-cp312-win_amd64.whl", "modules/vision_link/wheels/opencv_python_headless-5.0.0.93-cp37-abi3-win_amd64.whl", "modules/vision_link/wheels/pyclipper-1.4.0-cp312-cp312-win_amd64.whl", "modules/vision_link/wheels/pyyaml-6.0.3-cp312-cp312-win_amd64.whl", "modules/vision_link/wheels/rapidocr_onnxruntime-1.4.4-py3-none-any.whl", "modules/vision_link/wheels/shapely-2.1.2-cp312-cp312-win_amd64.whl", "modules/vision_link/wheels/six-1.17.0-py2.py3-none-any.whl", "modules/vision_link/wheels/tqdm-4.70.1-py3-none-any.whl", "tests/_bootstrap.py", "tests/test_ocr_env.py", "tests/test_vision_link.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/vision_link/__init__.py", "modules/vision_link/bridge.py", "modules/vision_link/detect.py", "modules/vision_link/ocr_env.py", "modules/vision_link/ocr_wheels/onnxruntime-1.24.1-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pillow-11.3.0-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pyclipper-1.4.0-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/pyyaml-6.0.3-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/rapidocr_onnxruntime-1.4.4-py3-none-any.whl", "modules/vision_link/ocr_wheels/shapely-2.1.2-cp314-cp314-win_amd64.whl", "modules/vision_link/ocr_wheels/six-1.17.0-py2.py3-none-any.whl", "modules/vision_link/ocr_wheels/tqdm-4.70.1-py3-none-any.whl", "modules/vision_link/ocr_worker.py", "modules/vision_link/plugin.py", "modules/vision_link/requirements.txt", "modules/vision_link/wheels/numpy-2.5.3-cp314-cp314-win_amd64.whl", "modules/vision_link/wheels/opencv_python_headless-5.0.0.93-cp37-abi3-win_amd64.whl", "tests/_bootstrap.py", "tests/test_ocr_env.py", "tests/test_vision_link.py"]
   - id: "xinput_oscillate"
     repo: "dgstudio-modules-xinput_oscillate"
     path: "modules/xinput_oscillate"
