@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-10T14:50:54Z"
+generated: "2026-10-10T14:53:02Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
