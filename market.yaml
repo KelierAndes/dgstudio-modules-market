@@ -31,11 +31,11 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "VRChat OSC 联动"
-    version: "1.18.0"
+    version: "1.19.0"
     description: "设备接入即向核心变量表登记全部可读 / 可写参数（变量名 = OSC 路径，带可读 / 可写标记，落在变量表可改名栏，改名即改收发地址），事件流画布用读数 / 回传卡片直接收发。"
     default_enabled: false
     requirements: ["python-osc>=1.9"]
-    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/osc_bridge/__init__.py", "modules/osc_bridge/bridge.py", "modules/osc_bridge/plugin.py", "modules/osc_bridge/requirements.txt", "modules/osc_bridge/wheels/python_osc-1.10.2-py3-none-any.whl", "tests/_bootstrap.py", "tests/test_auto_expose.py", "tests/test_multi_device.py", "tests/test_osc_defaults.py", "tests/test_osc_runtime.py", "tests/test_param_rename.py"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/osc_bridge/__init__.py", "modules/osc_bridge/bridge.py", "modules/osc_bridge/plugin.py", "modules/osc_bridge/requirements.txt", "modules/osc_bridge/wheels/python_osc-1.10.2-py3-none-any.whl", "modules/osc_bridge/flow/头像按键控制.json", "modules/osc_bridge/bindings/头像开火键.json", "tests/_bootstrap.py", "tests/test_auto_expose.py", "tests/test_multi_device.py", "tests/test_osc_defaults.py", "tests/test_osc_runtime.py", "tests/test_param_rename.py"]
   - id: "sound_link"
     repo: "dgstudio-modules-sound_link"
     path: "modules/sound_link"
