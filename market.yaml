@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-09T19:58:09Z"
+generated: "2026-10-10T02:29:44Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -24,7 +24,7 @@ modules:
     description: "灵猫气压 / 官方边控会话 → 闭环边控（事件流数据面）：事件流把 BMTR.Pressure/EdgeState 写入模块变量，闭环判定后发布刺激/惩罚强度等变量，设备动作由事件流的写入卡片驱动，模块自身不下发设备命令；达限后的下一次到边即释放边（不惩罚、刺激器=助力、循环置零）。"
     default_enabled: false
     requirements: []
-    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/margin_control/__init__.py", "modules/margin_control/bridge.py", "modules/margin_control/plugin.py", "modules/margin_control/requirements.txt", "tests/_bootstrap.py", "tests/test_margin_control.py", "待办.txt"]
+    files: [".gitignore", "LICENSE", "README.md", "modules/__init__.py", "modules/margin_control/__init__.py", "modules/margin_control/bridge.py", "modules/margin_control/plugin.py", "modules/margin_control/requirements.txt", "tests/_bootstrap.py", "tests/test_margin_control.py"]
   - id: "osc_bridge"
     repo: "dgstudio-modules-osc_bridge"
     path: "modules/osc_bridge"
