@@ -67,6 +67,5 @@ dgstudio-modules-strength_logger     ──────┘
 ## 许可
 
 与 DGStudio 相同，以 **GNU General Public License v3.0**（GPL-3.0）发布，
-全文见 [LICENSE](LICENSE)。各模块仓库同许可（**例外**：`dgstudio-modules-sound_link`
-以 **MIT License** 发布，见该仓库 `LICENSE`）；模块运行于 DGStudio 宿主并
+全文见 [LICENSE](LICENSE)。各模块仓库同许可；模块运行于 DGStudio 宿主并
 链接其核心代码。
