@@ -139,7 +139,7 @@ class HelloModule(ModuleBase):
 python-osc>=1.9                      # 必装依赖
 # 可选依赖以「!」前缀声明：安装时以 --no-deps 尽力安装，失败不阻断
 # 手动 pip install -r 时请跳过这些行
-!rapidocr-onnxruntime>=1.4.4
+!some-optional-addon>=1.0
 ```
 
 无 `requirements.txt` 时回退读 `META["dependencies"]`（旧式声明，等价的
@@ -154,6 +154,27 @@ pip 依赖串列表），仅作兼容保留。
   pip 包名与 import 名不一致（如 `opencv-python-headless` → `cv2`）自动映射；
 * 市场清单 `market.yaml` 由总仓库 Actions 解析各子仓库的 requirements.txt
   生成，模块页下载前即可展示依赖。
+
+**自带 wheel 的 ABI 纪律（务必照做）**：打包版跑的是 `DGStudio.exe` 旁的
+`_python/`，版本等于构建机解释器（现在是 3.14 → `cp314`）。编译型依赖的
+wheel 文件名里带解释器标记（`numpy-2.5.3-cp314-cp314-win_amd64.whl`），
+**只对同一个小版本生效**；`abi3` 与 `py3-none-any` 则通用。一次取对应版本的
+wheel：
+
+```
+pip download --only-binary=:all: --python-version 314 --abi cp314 \
+    --platform win_amd64 -d modules/<id>/wheels <包名>
+```
+
+宿主装依赖时**逐个** wheel 判 ABI：相符的就解进 `_deps`，不符的跳过并在日志
+里点名（不再因为个别不匹配就把整包自带依赖作废、退化成联网安装）。但别指望
+联网兜底：镜像不通、证书过期、目标机离线都会变成「依赖安装失败」。**发布前两道
+闸**：`build_exe.py` 对 `wheels/` 里的 ABI 不符直接拒绝构建（`--allow-stale-wheels`
+可强行跳过），`--selftest` 的 `flow_module_wheels_ok` 对已安装模块同样判失败。
+宿主**只扫 `wheels/`**，因此**绝不能把只在子进程 / 别的解释器里跑的东西放这里**——
+它们会进模块进程的 `_deps` 并被模块代码 import 到（`onnxruntime` 在冻结主进程里
+import 即段错误）。这类附属环境专用的 wheel 另起目录（vision_link 的
+`ocr_wheels/`），宿主不扫，由模块自己的安装逻辑取用。
 
 ---
 
