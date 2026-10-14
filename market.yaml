@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-14T07:48:08Z"
+generated: "2026-10-14T09:30:34Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -9,11 +9,11 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "Alice in Cradle 联动"
-    version: "0.7.2"
+    version: "0.8.0"
     description: "游戏侧 MOD 上报 HP/MP 等命名数值，本模块把它们与设备读数登记成变量供「事件流」取用，并把设备读数按同名字段回传游戏（HTTP + JSON）；本模块不下发设备动作。"
     default_enabled: false
     requirements: []
-    files: [".gitignore", "AliceInCradleLink/AliceInCradleLink.csproj", "AliceInCradleLink/DataClient.cs", "AliceInCradleLink/EventHooks.cs", "AliceInCradleLink/LinkConfig.cs", "AliceInCradleLink/LinkRunner.cs", "AliceInCradleLink/OverlayUi.cs", "AliceInCradleLink/Plugin.cs", "AliceInCradleLink/VitalReader.cs", "AliceInCradleLink/VitalSampler.cs", "LICENSE", "README.md", "_vendor/bepinex-core/0Harmony.dll", "_vendor/bepinex-core/BepInEx.dll", "modules/__init__.py", "modules/alice_cradle/__init__.py", "modules/alice_cradle/flow/AliceInCradle.json", "modules/alice_cradle/mods/AliceInCradleLink.dll", "modules/alice_cradle/plugin.py", "modules/alice_cradle/requirements.txt", "modules/alice_cradle/server.py", "modules/alice_cradle/vendor/BepInEx_win_x64_5.4.23.5.zip", "tests/_bootstrap.py", "tests/test_alice_cradle.py"]
+    files: [".gitignore", "AliceInCradleLink/AliceInCradleLink.csproj", "AliceInCradleLink/DataClient.cs", "AliceInCradleLink/EventHooks.cs", "AliceInCradleLink/LinkConfig.cs", "AliceInCradleLink/LinkRunner.cs", "AliceInCradleLink/OverlayUi.cs", "AliceInCradleLink/Plugin.cs", "AliceInCradleLink/VitalReader.cs", "AliceInCradleLink/VitalSampler.cs", "LICENSE", "README.md", "_vendor/bepinex-core/0Harmony.dll", "_vendor/bepinex-core/BepInEx.Core.dll", "_vendor/bepinex-core/BepInEx.Unity.dll", "modules/__init__.py", "modules/alice_cradle/__init__.py", "modules/alice_cradle/flow/AliceInCradle.json", "modules/alice_cradle/mods/AliceInCradleLink.dll", "modules/alice_cradle/plugin.py", "modules/alice_cradle/requirements.txt", "modules/alice_cradle/server.py", "modules/alice_cradle/vendor/BepInEx_win_x64_6.0.0-be.570_UnityMono.zip", "tests/_bootstrap.py", "tests/test_alice_cradle.py"]
   - id: "margin_control"
     repo: "dgstudio-modules-margin_control"
     path: "modules/margin_control"
