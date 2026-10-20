@@ -1,6 +1,6 @@
 # DGStudio 模块市场清单 —— 由 _tools/build_market.py 自动生成，勿手动编辑。
 schema: 1
-generated: "2026-10-19T07:55:25Z"
+generated: "2026-10-20T05:31:55Z"
 source: "https://github.com/KelierAndes/dgstudio-modules-market"
 modules:
   - id: "alice_cradle"
@@ -53,7 +53,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "强度日志示例"
-    version: "0.1.0"
+    version: "0.1.1"
     description: "演示模块 API：订阅强度变化写入应用日志（每设备限速 1 条/秒）。可作为开发新模块的模板。"
     default_enabled: false
     requirements: []
@@ -64,7 +64,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "画面识别联动"
-    version: "0.4.1"
+    version: "0.4.2"
     description: "OpenCV 通用画面识别：以「参数名 ← 检测行为」登记实时只读变量（检测颜色 / 图片 / 数值 / 数值条，区域例图可截图选取，数字/文字 RapidOCR 识别，OCR 跑在应用自带 Python 的子进程里）；本模块只发布变量，设备动作请在「事件流」页用写入卡片按这些变量编排。"
     default_enabled: false
     requirements: ["opencv-python-headless>=4.10"]
@@ -75,7 +75,7 @@ modules:
     branch: "main"
     author: "KelierAndes"
     name: "手柄震动联动（XInput）"
-    version: "0.3.1"
+    version: "0.3.2"
     description: "经 ViGEm 虚拟手柄接收游戏原生 XInput 震动派发（不注入游戏），把震动强度与状态登记为只读变量；设备动作请在「事件流」页用写入卡片按这些变量编排。支持键盘键位映射（无手柄调试）、实体手柄透传与回环自测。"
     default_enabled: false
     requirements: []
